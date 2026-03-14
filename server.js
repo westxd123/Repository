@@ -26,17 +26,26 @@ app.get('/', (req, res) => {
 });
 
 // ─── MONGODB BAĞLANTISI ──────────────────────────────────────────────────────
-let dbConnected = false;
-if (process.env.MONGODB_URI) {
-  mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-      console.log('✅ MongoDB bağlantısı başarılı!');
-      dbConnected = true;
-    })
-    .catch(err => console.error('❌ MongoDB bağlantı hatası:', err));
-} else {
-  console.log('⚠️ MONGODB_URI bulunamadı. Geçici RAM hafızası kullanılıyor (Veriler sıfırlanabilir).');
-}
+const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) return;
+  if (!process.env.MONGODB_URI) {
+    console.log('⚠️ MONGODB_URI bulunamadı. Geçici RAM hafızası kullanılıyor.');
+    return;
+  }
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, { 
+      useNewUrlParser: true, 
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000 // 5 saniye içinde bağlanamazsa hata ver
+    });
+    console.log('✅ MongoDB bağlantısı başarılı!');
+  } catch (err) {
+    console.error('❌ MongoDB bağlantı hatası:', err.message);
+  }
+};
+
+// İlk bağlantıyı başlat
+connectDB();
 
 // User Schema (MongoDB için)
 const userSchema = new mongoose.Schema({
@@ -57,7 +66,9 @@ const FREE_DAILY_LIMIT = 3;
 
 // ─── Yardımcı Fonksiyonlar ───────────────────────────────────────────────────
 async function getOrCreateUser(userId, email = '', businessName = '') {
+  await connectDB();
   const today = new Date().toDateString();
+  const dbConnected = mongoose.connection.readyState === 1;
 
   if (dbConnected) {
     let user = await User.findOne({ id: userId });
@@ -104,7 +115,7 @@ async function getOrCreateUser(userId, email = '', businessName = '') {
 }
 
 async function saveUser(user) {
-  if (dbConnected && user.save) {
+  if (mongoose.connection.readyState === 1 && user.save) {
     await user.save();
   }
 }
@@ -232,6 +243,7 @@ app.post('/api/auth/register', async (req, res) => {
     
     const userId = `u-${Buffer.from(email).toString('base64').substring(0, 8)}`;
     
+    const dbConnected = mongoose.connection.readyState === 1;
     let user;
     if (dbConnected) {
       const existing = await User.findOne({ id: userId });
@@ -255,19 +267,31 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email) return res.status(400).json({ error: 'E-posta zorunludur.' });
     
     const userId = `u-${Buffer.from(email).toString('base64').substring(0, 8)}`;
     
-    if (!users[userId]) {
+    const dbConnected = mongoose.connection.readyState === 1;
+    let user;
+    if (dbConnected) {
+      user = await User.findOne({ id: userId });
+    } else {
+      user = memoryUsers[userId];
+    }
+    
+    if (!user) {
       return res.status(404).json({ error: 'Kullanıcı bulunamadı. Lütfen önce kayıt olun.' });
     }
     
+    if (user.password !== password) {
+      return res.status(401).json({ error: 'Şifre hatalı.' });
+    }
+    
     console.log(`[AUTH] Login: ${email}`);
-    res.json({ success: true, user: users[userId] });
+    res.json({ success: true, user });
   } catch (err) {
     res.status(500).json({ error: 'Giriş hatası: ' + err.message });
   }
@@ -324,7 +348,7 @@ app.post('/api/generate', async (req, res) => {
 });
 
 // Premium abonelik (örnek endpoint — gerçekte Stripe/İyzico entegre edilir)
-app.post('/api/subscribe', (req, res) => {
+app.post('/api/subscribe', async (req, res) => {
   const { userId, email } = req.body;
   if (!userId || !email) {
     return res.status(400).json({ error: 'userId ve email zorunludur.' });
