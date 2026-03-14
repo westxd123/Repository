@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -17,6 +18,11 @@ app.use(express.json());
 
 // Statik frontend dosyalarını sun
 app.use(express.static(__dirname));
+
+// Ana sayfa için index.html gönder (Vercel Fix)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // ─── Basit Bellek Tabanlı Kullanıcı Veritabanı ───────────────────────────────
 // Gerçek projede MongoDB / PostgreSQL kullanın
