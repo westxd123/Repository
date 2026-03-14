@@ -142,15 +142,7 @@ async function callAI(productName, productFeatures, targetAudience = '', tone = 
   for (const model of FREE_MODELS) {
     try {
       const result = await callAIWithModel(model, prompt);
-      
-      const cleanData = {
-        description: result.description.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim(),
-        seoTitle: result.seoTitle.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim(),
-        instagramCaption: result.instagramCaption.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim(),
-        keywords: result.keywords || []
-      };
-
-      return cleanData;
+      return result;
     } catch (err) {
       lastError = err;
       console.warn(`[AI] Model ${model} failed, trying next...`);
@@ -251,19 +243,27 @@ app.post('/api/generate', async (req, res) => {
       return res.status(400).json({ error: 'Geçerli bir ürün adı girin.' });
     }
 
-    const result = await callAI(
-      productName.trim(), 
-      productFeatures?.trim(),
-      targetAudience?.trim(),
-      tone?.trim()
-    );
+      const rawResult = await callAI(
+        productName.trim(), 
+        productFeatures?.trim(),
+        targetAudience?.trim(),
+        tone?.trim()
+      );
+
+      // Clean properties safely
+      const cleanData = {
+        description: (rawResult.description || "İçerik üretilemedi.").replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim(),
+        seoTitle: (rawResult.seoTitle || "Başlık üretilemedi.").replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim(),
+        instagramCaption: (rawResult.instagramCaption || "Altyazı üretilemedi.").replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim(),
+        keywords: rawResult.keywords || []
+      };
 
     user.dailyUsage += 1;
     user.totalGenerated += 1;
 
     return res.json({
       success: true,
-      data: result,
+      data: cleanData,
       usage: {
         plan: user.plan,
         dailyUsage: user.dailyUsage,
@@ -271,8 +271,8 @@ app.post('/api/generate', async (req, res) => {
       },
     });
   } catch (err) {
-    console.error('AI API Hatası:', err.response?.data || err.message);
-    return res.status(500).json({ error: 'İçerik üretilirken bir hata oluştu.' });
+    console.error('AI API Hatası:', err.message);
+    return res.status(500).json({ error: 'AI Hatası: ' + err.message });
   }
 });
 
