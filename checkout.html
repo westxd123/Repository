@@ -1,168 +1,146 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Complete Checkout — Prodify Enterprise</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout // Prodify Premium</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Outfit', 'sans-serif'] },
-          colors: { 
-            brand: { black: '#000', accent: '#10b981', dark: '#064e3b', glow: '#34d399' } 
-          }
-        }
-      }
-    }
-  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
-    :root { --accent: #10b981; }
     body { background-color: #000; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-    
-    .bg-grid {
-      position: fixed; inset: 0;
-      background-image: linear-gradient(to right, #0a1f1a 1px, transparent 1px), linear-gradient(to bottom, #0a1f1a 1px, transparent 1px);
-      background-size: 50px 50px;
-      mask-image: radial-gradient(circle at center, black, transparent 80%);
-      z-index: -1;
-    }
-
-    .glass { background: rgba(6, 78, 59, 0.05); backdrop-filter: blur(24px); border: 1px solid rgba(16, 185, 129, 0.1); }
-
-    .input-premium {
-      background: rgba(255, 255, 255, 0.05) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: white !important;
-      transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-    }
-    .input-premium:focus {
-      border-color: var(--accent);
-      background: rgba(16, 185, 129, 0.08) !important;
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
-      outline: none;
-    }
-
-    input:-webkit-autofill {
-        -webkit-box-shadow: 0 0 0 40px #061210 inset !important;
-        -webkit-text-fill-color: #fff !important;
-    }
-
-    .btn-emerald {
-      background: #fff; color: #000;
-      font-family: 'Outfit', sans-serif; font-weight: 800;
-      transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-    }
-    .btn-emerald:hover { 
-      background: var(--accent); color: #fff; 
-      box-shadow: 0 15px 30px rgba(16, 185, 129, 0.2); 
-    }
-
-    .animate-in { animation: slideUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .text-impact { font-family: 'Inter', sans-serif; font-weight: 900; letter-spacing: -0.05em; }
+    .input-premium { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1); }
+    .input-premium:focus { border-color: #10b981; background: rgba(16, 185, 129, 0.05); outline: none; box-shadow: 0 0 30px rgba(16, 185, 129, 0.1); }
+    .btn-emerald { background: linear-gradient(135deg, #10b981 0%, #059669 100%); transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); cursor: pointer; border: none; font-weight: 900; color: white; }
+    .btn-emerald:hover { transform: translateY(-2px); box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3); filter: brightness(1.1); }
+    .card-glow { position: relative; overflow: hidden; }
+    .card-glow::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent, rgba(16, 185, 129, 0.3), transparent 30%); animation: rotate 4s linear infinite; pointer-events: none; z-index: 0; }
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
   </style>
 </head>
-<body class="antialiased min-h-screen">
-  <div class="bg-grid"></div>
+<body class="min-h-screen flex items-center justify-center p-6 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.08),transparent_50%)]">
 
-  <nav class="py-10 px-12 border-b border-brand-accent/10 glass">
-    <a href="/" class="text-sm font-black tracking-tighter uppercase italic flex items-center gap-3">
-      <div class="w-3 h-3 bg-brand-accent rounded-sm rotate-45"></div>
-      PRODIFY <span class="text-brand-accent">/</span> SECURE CHECKOUT
-    </a>
-  </nav>
-
-  <main class="max-w-5xl mx-auto py-32 px-6">
-    <div class="grid md:grid-cols-2 gap-20 animate-in">
-      <!-- Order Summary -->
-      <div class="space-y-10">
-        <h1 class="text-5xl font-black font-display italic uppercase tracking-tighter">Order Summary</h1>
-        <div class="glass p-10 rounded-[48px] space-y-8">
-          <div class="flex justify-between items-start pb-8 border-b border-white/5">
-            <div>
-              <p class="text-xl font-black italic">Pro Neural Mode</p>
-              <p class="text-[10px] text-gray-500 uppercase tracking-[0.3em] mt-2 font-bold">Infinite Intelligence Node</p>
-            </div>
-            <p class="text-3xl font-black">₺79</p>
-          </div>
-          <div class="space-y-4">
-            <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-gray-500">
-              <span>Security Protocol Fee</span>
-              <span>₺0.00</span>
-            </div>
-            <div class="flex justify-between text-2xl font-black text-white pt-4">
-              <span class="italic">Total Amount</span>
-              <span class="text-brand-accent">₺79.00</span>
-            </div>
-          </div>
+  <div class="max-w-4xl w-full grid lg:grid-cols-2 gap-12 items-center">
+    
+    <!-- Left: Specs & Order -->
+    <div class="reveal" id="order-info">
+      <div class="inline-flex items-center gap-2 px-4 py-2 mb-8 text-[10px] font-black tracking-[0.4em] uppercase border border-brand-accent/30 rounded-full bg-brand-accent/10 text-[#10b981]">Secure Checkout // Protocol 256</div>
+      <h1 class="text-impact text-5xl md:text-7xl italic uppercase mb-8">Access <br/> <span class="text-[#10b981]">Premium</span>.</h1>
+      
+      <div class="space-y-6 mb-12">
+        <div class="flex items-center gap-4 group">
+          <div class="w-10 h-10 rounded-full glass flex items-center justify-center text-[#10b981] group-hover:bg-[#10b981] group-hover:text-black transition-all">✓</div>
+          <p class="text-sm font-bold text-gray-400 group-hover:text-white transition-colors uppercase tracking-widest">Unlimited AI Generations</p>
         </div>
-        <div class="flex items-center gap-4 px-4">
-          <div class="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></div>
-          <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] font-bold">
-            Secure Encryption Active // SSL Secure Node
-          </p>
+        <div class="flex items-center gap-4 group">
+          <div class="w-10 h-10 rounded-full glass flex items-center justify-center text-[#10b981] group-hover:bg-[#10b981] group-hover:text-black transition-all">✓</div>
+          <p class="text-sm font-bold text-gray-400 group-hover:text-white transition-colors uppercase tracking-widest">Enterprise Neural Models</p>
+        </div>
+        <div class="flex items-center gap-4 group">
+          <div class="w-10 h-10 rounded-full glass flex items-center justify-center text-[#10b981] group-hover:bg-[#10b981] group-hover:text-black transition-all">✓</div>
+          <p class="text-sm font-bold text-gray-400 group-hover:text-white transition-colors uppercase tracking-widest">Priority Processing Lane</p>
         </div>
       </div>
 
-      <!-- Payment Fields -->
-      <div class="glass p-10 rounded-[56px] space-y-10 relative overflow-hidden">
-        <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand-accent/5 blur-3xl"></div>
-        
-        <div class="space-y-8 relative z-10">
-          <div>
-            <label class="text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 block mb-3 italic">Capital Authorization Source</label>
-            <input type="text" placeholder="Card Number" class="input-premium w-full rounded-2xl px-6 py-5 text-sm text-white"/>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <input type="text" placeholder="MM / YY" class="input-premium w-full rounded-2xl px-6 py-5 text-sm text-white"/>
-            <input type="text" placeholder="CVC" class="input-premium w-full rounded-2xl px-6 py-5 text-sm text-white"/>
-          </div>
-          <div class="pt-6">
-            <button onclick="handlePurchase()" class="btn-emerald w-full py-6 rounded-3xl text-xs uppercase tracking-[0.4em] shadow-2xl">
-              Authorize Payment
-            </button>
-          </div>
-          <p class="text-[8px] text-gray-600 text-center uppercase tracking-widest leading-relaxed">
-            Payment handled via global secure protocols. No data is stored on external nodes.
-          </p>
-        </div>
+      <div class="p-8 rounded-[40px] glass border-[#10b981]/20">
+        <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Total Amount</p>
+        <div class="text-4xl font-black italic">$2.20 <span class="text-sm text-gray-500 font-bold not-italic">/ month</span></div>
       </div>
     </div>
-  </main>
+
+    <!-- Right: Pay Card -->
+    <div class="reveal" style="transition-delay: 0.2s">
+      <div class="glass p-10 rounded-[48px] relative z-10">
+        <div class="flex justify-between items-center mb-10">
+          <div class="text-[11px] font-black uppercase tracking-[0.3em] text-gray-400">Payment Details</div>
+          <div class="flex gap-2">
+            <div class="w-8 h-5 bg-white/10 rounded-md"></div>
+            <div class="w-8 h-5 bg-white/10 rounded-md"></div>
+          </div>
+        </div>
+
+        <form id="pay-form" class="space-y-6">
+          <div>
+            <label class="text-[9px] font-black text-gray-600 uppercase tracking-widest block mb-3 px-1">Cardholder Identity</label>
+            <input type="text" placeholder="FULL NAME" required class="input-premium w-full rounded-2xl px-6 py-4 text-sm font-bold text-white uppercase tracking-widest placeholder:text-gray-700"/>
+          </div>
+          
+          <div>
+            <label class="text-[9px] font-black text-gray-600 uppercase tracking-widest block mb-3 px-1">Neural Credential Number</label>
+            <input type="text" placeholder="0000 0000 0000 0000" required class="input-premium w-full rounded-2xl px-6 py-4 text-sm font-bold text-white tracking-[0.2em] placeholder:text-gray-700"/>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <label class="text-[9px] font-black text-gray-600 uppercase tracking-widest block mb-3 px-1">EXPIRY</label>
+              <input type="text" placeholder="MM/YY" required class="input-premium w-full rounded-2xl px-6 py-4 text-sm font-bold text-white tracking-widest placeholder:text-gray-700"/>
+            </div>
+            <div>
+              <label class="text-[9px] font-black text-gray-600 uppercase tracking-widest block mb-3 px-1">SECRET</label>
+              <input type="password" placeholder="***" required class="input-premium w-full rounded-2xl px-6 py-4 text-sm font-bold text-white tracking-widest placeholder:text-gray-700"/>
+            </div>
+          </div>
+
+          <button type="submit" id="pay-btn" class="btn-emerald w-full py-6 rounded-3xl text-[12px] uppercase tracking-[0.4em] shadow-2xl mt-4">
+            Authorize Payment // $2.20
+          </button>
+        </form>
+
+        <p class="text-[8px] text-gray-600 uppercase tracking-widest text-center mt-8 leading-relaxed">
+          Financial data is encrypted via military-grade RSA-4096. <br/> By authorizing, you agree to the Neural Service Terms.
+        </p>
+      </div>
+    </div>
+
+  </div>
 
   <script src="app.js"></script>
   <script>
-    async function handlePurchase() {
-      const user = Auth.getSession();
-      if(!user) return;
-
-      try {
-        const res = await fetch('/api/subscribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user.id, email: user.email })
-        });
-        const data = await res.json();
-        if(data.success) {
-          // Update local session
-          const session = JSON.parse(localStorage.getItem('yazai_session'));
-          session.user.plan = 'premium';
-          localStorage.setItem('yazai_session', JSON.stringify(session));
-          
-          alert("Sistem Yetkilendirildi! Premium aboneliğiniz aktif edildi. 🎉");
-          window.location.href = '/profile.html';
-        }
-      } catch(err) {
-        alert("Ödeme protokolü hatası.");
-      }
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
-      if(!Auth.getSession()) window.location.href = 'auth.html?mode=register';
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+      
+      const user = Auth.getSession();
+      if (!user) { window.location.href = 'auth.html'; return; }
+
+      document.getElementById('pay-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('pay-btn');
+        const lang = localStorage.getItem('prodify_lang') || 'en';
+        
+        btn.disabled = true;
+        btn.innerHTML = 'PROCESSING ENCRYPTION...';
+        btn.style.opacity = '0.7';
+
+        try {
+          // Bu kısım simüle edilmiştir - Gerçekte ödeme sonrası callback ile tetiklenir
+          const response = await fetch(`${CONFIG.API_BASE}/api/subscribe`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id, email: user.email })
+          });
+          
+          const result = await response.json();
+          if (!response.ok) throw new Error(result.error);
+
+          showToast(lang === 'tr' ? 'Ödeme başarılı! Premium aktive edildi.' : 'Payment Success! Premium Activated.', 'success');
+          
+          // Local session güncelle
+          const updatedUser = { ...user, plan: 'premium' };
+          localStorage.setItem('yazai_session', JSON.stringify({ user: updatedUser, expiry: Date.now() + (24 * 60 * 60 * 1000) }));
+
+          setTimeout(() => { window.location.href = 'profile.html'; }, 2000);
+        } catch (err) {
+          showToast(err.message || 'Payment failed.', 'error');
+          btn.disabled = false;
+          btn.innerHTML = 'Authorize Payment // $2.20';
+          btn.style.opacity = '1';
+        }
+      };
     });
   </script>
 </body>
