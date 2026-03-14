@@ -289,8 +289,12 @@ app.post('/api/subscribe', (req, res) => {
 });
 
 // ─── Sunucuyu Başlat ─────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n🚀 AI E-Ticaret Tool API çalışıyor: http://localhost:${PORT}`);
-  console.log(`📋 Sağlık: http://localhost:${PORT}/api/health`);
-  console.log(`\n⚠️  .env dosyasında OPENROUTER_API_KEY tanımlı olduğundan emin olun!\n`);
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 AI E-Ticaret Tool API çalışıyor: http://localhost:${PORT}`);
+    console.log(`📋 Sağlık: http://localhost:${PORT}/api/health`);
+    console.log(`\n⚠️  .env dosyasında OPENROUTER_API_KEY tanımlı olduğundan emin olun!\n`);
+  });
+}
+
+module.exports = app;
