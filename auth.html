@@ -167,6 +167,10 @@
       const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
       const body = mode === 'login' ? { email, password } : { email, password, businessName };
 
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+
       try {
         const res = await fetch(endpoint, {
           method: 'POST',
@@ -175,12 +179,16 @@
         });
         const data = await res.json();
         if(data.success) {
-          Auth.setSession(data.user);
+          showToast(mode === 'login' ? 'Giriş başarılı! Yönlendiriliyorsunuz...' : 'Hesap oluşturuldu! Hoş geldiniz.', 'success');
+          setTimeout(() => Auth.setSession(data.user), 800);
         } else {
-          alert(data.error);
+          showToast(data.error || 'Bir hata oluştu.', 'error');
         }
       } catch(err) {
-        alert("Bağlantı hatası.");
+        showToast('Sunucuya bağlanılamadı. Lütfen tekrar deneyin.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.style.opacity = '1';
       }
     };
   </script>
