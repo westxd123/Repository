@@ -350,19 +350,24 @@ app.post('/api/generate', async (req, res) => {
 // Premium abonelik (örnek endpoint — gerçekte Stripe/İyzico entegre edilir)
 app.post('/api/subscribe', async (req, res) => {
   const { userId, email } = req.body;
-  if (!userId || !email) {
-    return res.status(400).json({ error: 'userId ve email zorunludur.' });
+  if (!userId) {
+    return res.status(400).json({ error: 'userId zorunludur.' });
   }
 
-  // Gerçek projede: ödeme işlemi → webhook → kullanıcıyı premium yap
-  const user = await getOrCreateUser(userId);
-  user.plan = 'premium';
+  try {
+    const user = await getOrCreateUser(userId, email);
+    user.plan = 'premium';
+    await saveUser(user);
 
-  res.json({
-    success: true,
-    message: 'Premium aboneliğiniz aktif edildi! 🎉',
-    plan: 'premium',
-  });
+    console.log(`[SUBS] User ${userId} upgraded to PREMIUM`);
+    res.json({
+      success: true,
+      message: 'Premium aboneliğiniz aktif edildi! 🎉',
+      plan: 'premium',
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Abonelik hatası: ' + err.message });
+  }
 });
 
 // ─── Sunucuyu Başlat ─────────────────────────────────────────────────────────

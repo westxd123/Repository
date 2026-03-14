@@ -270,7 +270,7 @@ function purchasePlan(planId) {
   if (!Auth.getSession()) {
     window.location.href = 'auth.html?mode=register';
   } else {
-    window.location.href = 'checkout.html';
+    window.location.href = 'checkout.html?plan=' + planId;
   }
 }
 
