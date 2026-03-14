@@ -4,6 +4,7 @@ const cors = require('cors');
 const axios = require('axios');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const mongoose = require('mongoose');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -24,45 +25,88 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// ─── Basit Bellek Tabanlı Kullanıcı Veritabanı ───────────────────────────────
-// Gerçek projede MongoDB / PostgreSQL kullanın
-const users = {
-  'free-demo-user': {
-    id: 'free-demo-user',
-    plan: 'free',
-    dailyUsage: 0,
-    lastReset: new Date().toDateString(),
-  },
-  'premium-user-1': {
-    id: 'premium-user-1',
-    plan: 'premium',
-    apiKey: 'PREMIUM-KEY-ABC123',
-    dailyUsage: 0,
-    lastReset: new Date().toDateString(),
-  },
-};
+// ─── MONGODB BAĞLANTISI ──────────────────────────────────────────────────────
+let dbConnected = false;
+if (process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+      console.log('✅ MongoDB bağlantısı başarılı!');
+      dbConnected = true;
+    })
+    .catch(err => console.error('❌ MongoDB bağlantı hatası:', err));
+} else {
+  console.log('⚠️ MONGODB_URI bulunamadı. Geçici RAM hafızası kullanılıyor (Veriler sıfırlanabilir).');
+}
 
+// User Schema (MongoDB için)
+const userSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  email: { type: String, required: true },
+  businessName: { type: String },
+  password: { type: String },
+  plan: { type: String, default: 'free' },
+  dailyUsage: { type: Number, default: 0 },
+  totalGenerated: { type: Number, default: 0 },
+  lastReset: { type: String }
+});
+const User = mongoose.model('User', userSchema);
+
+// Memory DB (MongoDB Yoksa Fallback)
+const memoryUsers = {};
 const FREE_DAILY_LIMIT = 3;
 
 // ─── Yardımcı Fonksiyonlar ───────────────────────────────────────────────────
-function getOrCreateUser(userId) {
-  if (!users[userId]) {
-    users[userId] = {
-      id: userId,
-      plan: 'free',
-      dailyUsage: 0,
-      lastReset: new Date().toDateString(),
-    };
-  }
-
-  const user = users[userId];
-  // Gün değiştiyse kullanımı sıfırla
+async function getOrCreateUser(userId, email = '', businessName = '') {
   const today = new Date().toDateString();
-  if (user.lastReset !== today) {
-    user.dailyUsage = 0;
-    user.lastReset = today;
+
+  if (dbConnected) {
+    let user = await User.findOne({ id: userId });
+    if (!user) {
+      user = new User({
+        id: userId,
+        email: email || userId + '@example.com',
+        businessName: businessName || 'My Business',
+        plan: 'free',
+        dailyUsage: 0,
+        totalGenerated: 0,
+        lastReset: today
+      });
+      await user.save();
+    }
+    
+    // Gün değiştiyse kullanımı sıfırla
+    if (user.lastReset !== today) {
+      user.dailyUsage = 0;
+      user.lastReset = today;
+      await user.save();
+    }
+    return user;
+  } else {
+    // RAM Mode
+    if (!memoryUsers[userId]) {
+      memoryUsers[userId] = {
+        id: userId,
+        email: email || userId + '@example.com',
+        businessName: businessName || 'My Business',
+        plan: 'free',
+        dailyUsage: 0,
+        totalGenerated: 0,
+        lastReset: today
+      };
+    }
+    const user = memoryUsers[userId];
+    if (user.lastReset !== today) {
+      user.dailyUsage = 0;
+      user.lastReset = today;
+    }
+    return user;
   }
-  return user;
+}
+
+async function saveUser(user) {
+  if (dbConnected && user.save) {
+    await user.save();
+  }
 }
 
 function checkFreemiumLimit(user) {
@@ -71,7 +115,7 @@ function checkFreemiumLimit(user) {
     return {
       allowed: false,
       remaining: 0,
-      message: `Günlük ücretsiz limitinize (${FREE_DAILY_LIMIT} ürün) ulaştınız. Sınırsız kullanım için 79 TL/ay'a abone olun.`,
+      message: `Günlük ücretsiz limitinize (${FREE_DAILY_LIMIT} ürün) ulaştınız. Premium pakete geçin.`,
     };
   }
   return {
@@ -167,9 +211,9 @@ app.get('/api/health', (req, res) => {
 });
 
 // Kullanıcı durumu sorgula
-app.get('/api/user/status', (req, res) => {
+app.get('/api/user/status', async (req, res) => {
   const userId = req.headers['x-user-id'] || 'anonymous';
-  const user = getOrCreateUser(userId);
+  const user = await getOrCreateUser(userId);
   const limit = checkFreemiumLimit(user);
 
   res.json({
@@ -181,29 +225,31 @@ app.get('/api/user/status', (req, res) => {
 });
 
 // Auth Endpoints
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
   try {
     const { businessName, email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'E-posta ve şifre zorunludur.' });
     
-    // Basit bir userId oluştur (Base64 email)
     const userId = `u-${Buffer.from(email).toString('base64').substring(0, 8)}`;
     
-    if (!users[userId]) {
-      users[userId] = {
-        id: userId,
-        email,
-        businessName: businessName || 'My Business',
-        plan: 'free',
-        dailyUsage: 0,
-        totalGenerated: 0,
-        createdAt: new Date(),
-        lastReset: new Date().toDateString()
-      };
+    let user;
+    if (dbConnected) {
+      const existing = await User.findOne({ id: userId });
+      if (existing) {
+        return res.status(400).json({ error: 'Bu e-posta zaten kayıtlı.' });
+      }
+    } else {
+      if (memoryUsers[userId]) {
+        return res.status(400).json({ error: 'Bu e-posta zaten kayıtlı.' });
+      }
     }
     
+    user = await getOrCreateUser(userId, email, businessName);
+    user.password = password; // Not: Gerçek hayatta burada bcrypt ile hashlenir
+    await saveUser(user);
+    
     console.log(`[AUTH] Register: ${email}`);
-    res.json({ success: true, user: users[userId] });
+    res.json({ success: true, user });
   } catch (err) {
     res.status(500).json({ error: 'Auth hatası: ' + err.message });
   }
@@ -229,7 +275,7 @@ app.post('/api/auth/login', (req, res) => {
 
 app.post('/api/generate', async (req, res) => {
   const userId = req.headers['x-user-id'] || `guest-${req.ip}`;
-  const user = getOrCreateUser(userId);
+  const user = await getOrCreateUser(userId);
   const limitCheck = checkFreemiumLimit(user);
 
   if (!limitCheck.allowed) {
@@ -260,6 +306,7 @@ app.post('/api/generate', async (req, res) => {
 
     user.dailyUsage += 1;
     user.totalGenerated += 1;
+    await saveUser(user);
 
     return res.json({
       success: true,
@@ -284,7 +331,7 @@ app.post('/api/subscribe', (req, res) => {
   }
 
   // Gerçek projede: ödeme işlemi → webhook → kullanıcıyı premium yap
-  const user = getOrCreateUser(userId);
+  const user = await getOrCreateUser(userId);
   user.plan = 'premium';
 
   res.json({
