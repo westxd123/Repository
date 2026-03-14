@@ -283,40 +283,142 @@
         <h2 data-i18n="pricing.title" class="text-impact text-6xl md:text-8xl font-black uppercase italic mb-8">Capital.</h2>
         <p data-i18n="pricing.subtitle" class="text-gray-500 text-xl font-medium">Don't limit your growth.</p>
       </div>
-
       <div class="grid md:grid-cols-3 gap-12">
         <!-- Starter -->
         <div class="glass p-12 rounded-[50px] flex flex-col glow-card group transition-all duration-500">
-          <span data-i18n="pricing.starter-tag" class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-10 italic">Core / 01</span>
-          <div data-i18n="pricing.starter-name" class="text-5xl font-black mb-14 italic font-display">Starter</div>
-          <ul class="space-y-6 mb-16 flex-grow text-[11px] font-bold text-gray-500 uppercase tracking-[0.2em]">
-            <li data-i18n="pricing.starter-f1">· 3 Neural Cycles / Day</li>
-            <li data-i18n="pricing.starter-f2">· Baseline Access</li>
+          <span data-i18n="pricing.starter-tag" class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-8 italic">Core / 01</span>
+          <div data-i18n="pricing.starter-name" class="text-5xl font-black mb-3 italic font-display">Starter</div>
+          <div class="text-2xl font-black mb-10 font-display text-gray-600 italic">Free <span class="text-xs text-gray-700 font-bold">/ forever</span></div>
+          <ul class="space-y-4 mb-16 flex-grow text-[11px] font-bold text-gray-500 uppercase tracking-[0.15em]">
+            <li data-i18n="pricing.starter-f1" class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-gray-600 rounded-full flex-shrink-0"></span>3 AI Generations / Day</li>
+            <li data-i18n="pricing.starter-f2" class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-gray-600 rounded-full flex-shrink-0"></span>Product Description Writing</li>
+            <li data-i18n="pricing.starter-f3" class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-gray-600 rounded-full flex-shrink-0"></span>Basic SEO Title Generator</li>
+            <li data-i18n="pricing.starter-f4" class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-gray-600 rounded-full flex-shrink-0"></span>Instagram Caption Generator</li>
+            <li data-i18n="pricing.starter-f5" class="flex items-center gap-3 opacity-40 line-through"><span class="w-1.5 h-1.5 bg-gray-700 rounded-full flex-shrink-0"></span>Analytics Dashboard</li>
           </ul>
-          <button onclick="purchasePlan('free')" data-i18n="pricing.starter-btn" class="w-full py-5 rounded-2xl border border-white/5 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white/5 transition-all text-white">Join Network</button>
+          <button onclick="purchasePlan('free')" data-i18n="pricing.starter-btn" class="w-full py-5 rounded-2xl border border-white/8 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white/5 transition-all text-white">Join Network</button>
         </div>
-
         <!-- Pro -->
-        <div class="glass p-12 rounded-[60px] flex flex-col border-brand-accent/50 bg-brand-accent/[0.04] relative scale-[1.08] shadow-[0_0_100px_rgba(16,185,129,0.1)]">
-          <div data-i18n="pricing.pro-tag" class="absolute -top-5 left-1/2 -translate-x-1/2 bg-brand-accent text-white text-[9px] font-black px-8 py-2.5 rounded-full uppercase tracking-[0.3em] italic">Full Access</div>
-          <span data-i18n="pricing.pro-badge" class="text-[10px] font-black text-brand-accent uppercase tracking-widest mb-10 italic">Neural / 02</span>
-          <div class="text-5xl font-black mb-14 italic font-display tracking-tighter">₺79 <span class="text-sm text-gray-600">/mo</span></div>
-          <ul class="space-y-6 mb-16 flex-grow text-[11px] font-black text-gray-200 uppercase tracking-[0.2em]">
-            <li class="flex items-center gap-4"><span class="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></span><span data-i18n="pricing.pro-f1">Unlimited Intelligence</span></li>
-            <li class="flex items-center gap-4"><span class="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></span><span data-i18n="pricing.pro-f2">Priority Neural Host</span></li>
+        <div class="glass p-12 rounded-[60px] flex flex-col border-brand-accent/50 bg-brand-accent/[0.04] relative scale-[1.08] shadow-[0_0_100px_rgba(16,185,129,0.12)]">
+          <div data-i18n="pricing.pro-tag" class="absolute -top-5 left-1/2 -translate-x-1/2 bg-brand-accent text-white text-[9px] font-black px-8 py-2.5 rounded-full uppercase tracking-[0.3em] italic whitespace-nowrap">Full Access</div>
+          <span data-i18n="pricing.pro-badge" class="text-[10px] font-black text-brand-accent uppercase tracking-widest mb-8 italic">Neural / 02</span>
+          <div class="text-5xl font-black mb-1 italic font-display tracking-tighter">&#x20BA;79 <span class="text-sm text-gray-600">/mo</span></div>
+          <div data-i18n="pricing.pro-cancel" class="text-[9px] text-gray-700 font-bold uppercase tracking-widest mb-10">~$2.20 USD &middot; Cancel anytime</div>
+          <ul class="space-y-4 mb-16 flex-grow text-[11px] font-black text-gray-200 uppercase tracking-[0.15em]">
+            <li class="flex items-center gap-3"><span class="w-2 h-2 bg-brand-accent rounded-full animate-pulse flex-shrink-0"></span><span data-i18n="pricing.pro-f1">Unlimited AI Generations</span></li>
+            <li class="flex items-center gap-3"><span class="w-2 h-2 bg-brand-accent rounded-full animate-pulse flex-shrink-0"></span><span data-i18n="pricing.pro-f2">Advanced SEO Optimization</span></li>
+            <li class="flex items-center gap-3"><span class="w-2 h-2 bg-brand-accent rounded-full animate-pulse flex-shrink-0"></span><span data-i18n="pricing.pro-f3">Multi-Platform Captions</span></li>
+            <li class="flex items-center gap-3"><span class="w-2 h-2 bg-brand-accent rounded-full animate-pulse flex-shrink-0"></span><span data-i18n="pricing.pro-f4">All 4 Content Tones</span></li>
+            <li class="flex items-center gap-3"><span class="w-2 h-2 bg-brand-accent rounded-full animate-pulse flex-shrink-0"></span><span data-i18n="pricing.pro-f5">Priority Processing</span></li>
+            <li class="flex items-center gap-3"><span class="w-2 h-2 bg-brand-accent rounded-full animate-pulse flex-shrink-0"></span><span data-i18n="pricing.pro-f6">Analytics Dashboard</span></li>
           </ul>
           <button onclick="purchasePlan('pro')" data-i18n="pricing.pro-btn" class="btn-premium w-full py-6 rounded-3xl text-[11px] uppercase tracking-[0.4em]">Initialize Pro</button>
         </div>
-
-        <!-- Enterprise -->
-        <div class="glass p-12 rounded-[50px] flex flex-col glow-card transition-all duration-500">
-          <span data-i18n="pricing.elite-tag" class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-10 italic">Elite / 03</span>
-          <div data-i18n="pricing.elite-name" class="text-5xl font-black mb-14 italic font-display">Elite</div>
-          <ul class="space-y-6 mb-16 flex-grow text-[11px] font-bold text-gray-500 uppercase tracking-[0.2em]">
-            <li data-i18n="pricing.elite-f1">· Full API Infrastructure</li>
-            <li data-i18n="pricing.elite-f2">· Dedicated Training</li>
+        <!-- Elite -->
+        <div class="glass p-12 rounded-[50px] flex flex-col glow-card transition-all duration-500 relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-white/[0.015] to-transparent pointer-events-none"></div>
+          <span data-i18n="pricing.elite-tag" class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-8 italic relative z-10">Elite / 03</span>
+          <div data-i18n="pricing.elite-name" class="text-5xl font-black mb-3 italic font-display relative z-10">Elite</div>
+          <div class="text-2xl font-black mb-10 font-display text-gray-600 italic relative z-10">Custom <span class="text-xs text-gray-700 font-bold">/ pricing</span></div>
+          <ul class="space-y-4 mb-16 flex-grow text-[11px] font-bold text-gray-400 uppercase tracking-[0.15em] relative z-10">
+            <li data-i18n="pricing.elite-f1" class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-gray-400 rounded-full flex-shrink-0"></span>Everything in Pro</li>
+            <li data-i18n="pricing.elite-f2" class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-gray-400 rounded-full flex-shrink-0"></span>Full API Access &amp; Webhooks</li>
+            <li data-i18n="pricing.elite-f3" class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-gray-400 rounded-full flex-shrink-0"></span>Custom AI Model Training</li>
+            <li data-i18n="pricing.elite-f4" class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-gray-400 rounded-full flex-shrink-0"></span>Dedicated Account Manager</li>
+            <li data-i18n="pricing.elite-f5" class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-gray-400 rounded-full flex-shrink-0"></span>White-Label Option</li>
           </ul>
-          <button onclick="purchasePlan('enterprise')" data-i18n="pricing.elite-btn" class="w-full py-5 rounded-2xl border border-white/5 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white/5 transition-all text-white">Contact Elite</button>
+          <button onclick="purchasePlan('enterprise')" data-i18n="pricing.elite-btn" class="w-full py-5 rounded-2xl border border-white/8 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white/5 transition-all text-white relative z-10">Contact Elite</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="mb-60 reveal">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="glass rounded-[32px] p-8 text-center glow-card group transition-all duration-300">
+          <div class="text-5xl font-black text-impact mb-3 group-hover:scale-110 transition-transform">12K+</div>
+          <p data-i18n="stats.generated" class="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em]">Products Generated</p>
+        </div>
+        <div class="glass rounded-[32px] p-8 text-center glow-card group transition-all duration-300">
+          <div class="text-5xl font-black text-brand-accent mb-3 group-hover:scale-110 transition-transform">1K+</div>
+          <p data-i18n="stats.merchants" class="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em]">Active Merchants</p>
+        </div>
+        <div class="glass rounded-[32px] p-8 text-center glow-card group transition-all duration-300">
+          <div class="text-5xl font-black text-impact mb-3 group-hover:scale-110 transition-transform">4</div>
+          <p data-i18n="stats.models" class="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em]">AI Models Active</p>
+        </div>
+        <div class="glass rounded-[32px] p-8 text-center glow-card group transition-all duration-300">
+          <div class="text-5xl font-black text-brand-accent mb-3 group-hover:scale-110 transition-transform">98%</div>
+          <p data-i18n="stats.satisfaction" class="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em]">Satisfaction Rate</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="mb-60 reveal">
+      <div class="text-center mb-24">
+        <div data-i18n="how.badge" class="inline-flex items-center gap-3 px-5 py-2 mb-8 text-[10px] font-black tracking-[0.4em] uppercase border border-brand-accent/30 rounded-full bg-brand-accent/10 text-brand-accent">Process // 3 Steps</div>
+        <h2 data-i18n="how.title" class="text-impact text-5xl md:text-7xl font-black uppercase italic mb-6">How It Works.</h2>
+        <p data-i18n="how.subtitle" class="text-gray-500 text-lg max-w-xl mx-auto">Three steps to enterprise-grade content, generated in seconds.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="glass p-10 rounded-[40px] glow-card group transition-all duration-500 relative overflow-hidden">
+          <div class="absolute top-6 right-8 text-[80px] font-black text-brand-accent/5 leading-none select-none">01</div>
+          <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center text-brand-accent font-black text-xl mb-8">&#10022;</div>
+          <h3 data-i18n="how.step1-title" class="text-xl font-black uppercase tracking-tight mb-4 text-white">Input Product Data</h3>
+          <p data-i18n="how.step1-desc" class="text-gray-500 text-sm leading-relaxed font-medium">Enter your product name, key features, target audience, and preferred content tone. The neural engine processes your input in real time.</p>
+        </div>
+        <div class="glass p-10 rounded-[40px] glow-card group transition-all duration-500 relative overflow-hidden border-brand-accent/20">
+          <div class="absolute top-6 right-8 text-[80px] font-black text-brand-accent/8 leading-none select-none">02</div>
+          <div class="w-14 h-14 rounded-2xl bg-brand-accent/20 border border-brand-accent/30 flex items-center justify-center text-brand-accent font-black text-xl mb-8">&#9889;</div>
+          <h3 data-i18n="how.step2-title" class="text-xl font-black uppercase tracking-tight mb-4 text-white">AI Processing</h3>
+          <p data-i18n="how.step2-desc" class="text-gray-500 text-sm leading-relaxed font-medium">Our neural engine analyzes your input across multiple AI models, selecting the best output — high-converting, professional, and platform-optimized.</p>
+        </div>
+        <div class="glass p-10 rounded-[40px] glow-card group transition-all duration-500 relative overflow-hidden">
+          <div class="absolute top-6 right-8 text-[80px] font-black text-brand-accent/5 leading-none select-none">03</div>
+          <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center text-brand-accent font-black text-xl mb-8">&#9711;</div>
+          <h3 data-i18n="how.step3-title" class="text-xl font-black uppercase tracking-tight mb-4 text-white">Copy &amp; Deploy</h3>
+          <p data-i18n="how.step3-desc" class="text-gray-500 text-sm leading-relaxed font-medium">Receive your product description, SEO title, and social media caption. One click to copy and deploy across Trendyol, Hepsiburada, Amazon, or Instagram.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="mb-60 reveal">
+      <div class="text-center mb-24">
+        <h2 data-i18n="feat.title" class="text-impact text-5xl md:text-7xl font-black uppercase italic mb-6">Why Prodify?</h2>
+        <p data-i18n="feat.subtitle" class="text-gray-500 text-lg">Every feature engineered for commerce at scale.</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="glass p-8 rounded-[32px] glow-card group transition-all duration-300">
+          <div class="text-3xl mb-6">&#9889;</div>
+          <h4 data-i18n="feat.f1-title" class="text-sm font-black uppercase tracking-widest text-white mb-3">Lightning Fast</h4>
+          <p data-i18n="feat.f1-desc" class="text-gray-500 text-[13px] leading-relaxed">Content generated in under 3 seconds. Multi-model fallback ensures 99.9% uptime even during AI provider outages.</p>
+        </div>
+        <div class="glass p-8 rounded-[32px] glow-card group transition-all duration-300">
+          <div class="text-3xl mb-6">&#127919;</div>
+          <h4 data-i18n="feat.f2-title" class="text-sm font-black uppercase tracking-widest text-white mb-3">SEO-Optimized</h4>
+          <p data-i18n="feat.f2-desc" class="text-gray-500 text-[13px] leading-relaxed">AI-crafted titles built around e-commerce search patterns. Your products rank higher on Trendyol, Amazon, and Hepsiburada searches.</p>
+        </div>
+        <div class="glass p-8 rounded-[32px] glow-card group transition-all duration-300">
+          <div class="text-3xl mb-6">&#128241;</div>
+          <h4 data-i18n="feat.f3-title" class="text-sm font-black uppercase tracking-widest text-white mb-3">Multi-Platform</h4>
+          <p data-i18n="feat.f3-desc" class="text-gray-500 text-[13px] leading-relaxed">One product entry, three outputs: marketplace description, SEO meta title, and Instagram-ready caption. Zero extra effort.</p>
+        </div>
+        <div class="glass p-8 rounded-[32px] glow-card group transition-all duration-300">
+          <div class="text-3xl mb-6">&#128274;</div>
+          <h4 data-i18n="feat.f4-title" class="text-sm font-black uppercase tracking-widest text-white mb-3">Emoji-Free Output</h4>
+          <p data-i18n="feat.f4-desc" class="text-gray-500 text-[13px] leading-relaxed">Enterprise-grade, clean corporate copy. No filler emojis or fluff — pure professional language that builds brand trust.</p>
+        </div>
+        <div class="glass p-8 rounded-[32px] glow-card group transition-all duration-300 border-brand-accent/20 bg-brand-accent/[0.02]">
+          <div class="text-3xl mb-6">&#127912;</div>
+          <h4 data-i18n="feat.f5-title" class="text-sm font-black uppercase tracking-widest text-brand-accent mb-3">4 Content Tones</h4>
+          <p data-i18n="feat.f5-desc" class="text-gray-500 text-[13px] leading-relaxed">Choose from Professional, Exciting, Luxury, or Sincere tones. The AI adapts its language to perfectly match your brand voice.</p>
+        </div>
+        <div class="glass p-8 rounded-[32px] glow-card group transition-all duration-300">
+          <div class="text-3xl mb-6">&#127760;</div>
+          <h4 data-i18n="feat.f6-title" class="text-sm font-black uppercase tracking-widest text-white mb-3">Turkish Market Focus</h4>
+          <p data-i18n="feat.f6-desc" class="text-gray-500 text-[13px] leading-relaxed">Trained on Turkish e-commerce patterns. Understands local buyer psychology, platform conventions, and high-converting keyword structures.</p>
         </div>
       </div>
     </section>
