@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workspace Profile — Prodify Enterprise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Outfit', 'sans-serif'] },
+          colors: { brand: { black: '#000', border: '#1a1a1a', accent: '#10b981' } }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #050505; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    .bg-grid { position: fixed; inset: 0; background-image: linear-gradient(to right, #081a17 1px, transparent 1px), linear-gradient(to bottom, #081a17 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(circle at center, black, transparent 80%); z-index: -1; }
+    .banner { height: 280px; background: linear-gradient(135deg, #064e3b 0%, #050505 100%); position: relative; overflow: hidden; border-radius: 0 0 40px 40px; }
+    .banner::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 70% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%); }
+    .glass-card { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(16, 185, 129, 0.05); }
+    .profile-img { width: 140px; height: 140px; border: 4px solid #050505; box-shadow: 0 20px 40px rgba(0,0,0,0.5); margin-top: -70px; background: linear-gradient(135deg, #10b981, #064e3b); }
+    .stat-card { border-radius: 24px; padding: 24px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03); transition: all 0.3s ease; }
+    .stat-card:hover { border-color: #10b981; background: rgba(16, 185, 129, 0.02); transform: translateY(-5px); }
+    .animate-in { animation: slideUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="antialiased">
+  <div class="bg-grid"></div>
+
+  <nav class="fixed top-0 z-50 w-full py-6 px-12 flex justify-between items-center bg-black/50 backdrop-blur-xl border-b border-white/5">
+    <a href="/" class="text-sm font-black tracking-tighter uppercase italic">PRODIFY <span class="text-brand-accent">/</span> PROFILE</a>
+    <div class="flex items-center gap-6">
+      <button onclick="Auth.logout()" class="text-[10px] font-bold uppercase tracking-widest text-red-500 hover:text-red-400">Logout System</button>
+      <a href="/" class="text-[10px] font-black bg-white text-black px-6 py-2.5 rounded-xl uppercase tracking-widest hover:bg-brand-accent hover:text-white transition-all shadow-xl">Go to Dashboard</a>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto pb-40 pt-10">
+    <div class="banner"></div>
+    <div class="px-10 relative flex flex-col md:flex-row items-center md:items-end gap-8 animate-in">
+      <div class="profile-img rounded-[40px] flex items-center justify-center text-5xl font-black text-white relative z-10">
+        <span id="profile-initial">P</span>
+      </div>
+      <div class="flex-grow text-center md:text-left mb-4">
+        <h1 id="user-business" class="text-4xl md:text-6xl font-black font-display tracking-tight mb-2 uppercase italic text-impact">Business Name</h1>
+        <div class="flex items-center justify-center md:justify-start gap-4">
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-accent/20 text-brand-accent text-[10px] font-black uppercase tracking-widest border border-brand-accent/20">
+            <span class="w-1.5 h-1.5 bg-brand-accent rounded-full animate-pulse"></span>
+            Operational Mode
+          </span>
+          <span id="user-role" class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em]">Enterprise Engine</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-12 gap-10 px-10 mt-20 animate-in">
+      <div class="lg:col-span-4 space-y-6">
+        <div class="glass-card rounded-[40px] p-10">
+          <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-600 mb-8 italic">Node Intelligence</h3>
+          <div class="space-y-8">
+            <div>
+              <p class="text-[9px] font-bold text-gray-600 uppercase mb-2">Auth Node</p>
+              <p id="user-email" class="text-md font-bold text-white truncate">loading...</p>
+            </div>
+            <div>
+              <p class="text-[9px] font-bold text-gray-600 uppercase mb-2">Plan Spectrum</p>
+              <p id="user-plan" class="text-md font-black text-brand-accent uppercase italic">loading...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-8 grid md:grid-cols-2 gap-8">
+        <div class="stat-card flex flex-col justify-between group">
+          <div class="flex justify-between items-start mb-12">
+            <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 flex items-center justify-center text-brand-accent font-black text-xl">AI</div>
+            <span class="text-[8px] font-black text-gray-600 uppercase tracking-[0.4em]">Efficiency_Rate</span>
+          </div>
+          <div>
+            <div id="stat-daily" class="text-6xl font-black mb-2 font-display italic tracking-tighter">0</div>
+            <p class="text-[11px] font-bold text-gray-500 uppercase tracking-widest mt-2">Daily Success cycles</p>
+          </div>
+        </div>
+
+        <div class="stat-card flex flex-col justify-between group bg-brand-accent/[0.01]">
+          <div class="flex justify-between items-start mb-12">
+            <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 flex items-center justify-center text-brand-accent font-black text-xl">Σ</div>
+            <span class="text-[8px] font-black text-gray-600 uppercase tracking-[0.4em]">Integrated_Output</span>
+          </div>
+          <div>
+            <div id="stat-total" class="text-6xl font-black mb-2 font-display italic tracking-tighter">0</div>
+            <p class="text-[11px] font-bold text-gray-500 uppercase tracking-widest mt-2">Cumulative Intelligence</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = Auth.getSession();
+      if (!user) { window.location.href = 'auth.html'; return; }
+      document.getElementById('user-business').textContent = user.businessName;
+      document.getElementById('profile-initial').textContent = user.businessName.charAt(0).toUpperCase();
+      document.getElementById('user-email').textContent = user.email;
+      document.getElementById('user-plan').textContent = user.plan;
+      animateValue("stat-daily", 0, user.dailyUsage || 0, 1000);
+      animateValue("stat-total", 0, user.totalGenerated || 0, 1500);
+    });
+    function animateValue(id, start, end, duration) {
+      if (start === end) { document.getElementById(id).innerHTML = end; return; }
+      const range = end - start; let current = start; const increment = end > start ? 1 : -1;
+      const stepTime = Math.abs(Math.floor(duration / range));
+      const obj = document.getElementById(id);
+      const timer = setInterval(() => { current += increment; obj.innerHTML = current; if (current == end) clearInterval(timer); }, stepTime || 1);
+    }
+  </script>
+</body>
+</html>

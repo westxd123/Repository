@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prodify — Enterprise Content Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Outfit', 'sans-serif'] },
+          colors: { 
+            brand: { black: '#000', accent: '#10b981', dark: '#064e3b', glow: '#34d399' } 
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root { --accent: #10b981; }
+    html, body { 
+      scroll-behavior: smooth; 
+      overflow-x: hidden; 
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body { background-color: #000; color: #fff; font-family: 'Inter', sans-serif; min-height: 200vh; }
+    
+    .bg-grid {
+      position: fixed; inset: 0;
+      background-image: linear-gradient(to right, #0a1f1a 1px, transparent 1px), linear-gradient(to bottom, #0a1f1a 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(circle at center, black, transparent 80%);
+      z-index: -1;
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(40px); filter: blur(10px);
+      transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); filter: blur(0); }
+
+    .text-impact {
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: -0.04em; line-height: 0.95;
+      background: linear-gradient(to bottom, #fff 40%, #10b981);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .glass { background: rgba(6, 78, 59, 0.05); backdrop-filter: blur(24px); border: 1px solid rgba(16, 185, 129, 0.1); }
+
+    .btn-premium {
+      background: #fff; color: #000; font-family: 'Outfit', sans-serif; font-weight: 800;
+      transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .btn-premium:hover { 
+      background: var(--accent); color: #fff; 
+      box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3); transform: translateY(-2px);
+    }
+
+    .spotlight {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; height: 100vh;
+      background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.1) 0%, transparent 60%);
+      pointer-events: none; z-index: -1;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-100%); }
+    }
+    .animate-marquee { animation: marquee 40s linear infinite; }
+    .marquee-container:hover .animate-marquee { animation-play-state: paused; }
+
+    .glow-card:hover { border-color: var(--accent); box-shadow: 0 0 50px rgba(16, 185, 129, 0.1); }
+  </style>
+</head>
+<body class="antialiased">
+  <div class="bg-grid"></div>
+  <div class="spotlight"></div>
+
+  <!-- Header -->
+  <nav class="fixed top-0 z-[100] w-full py-6 px-12 glass flex justify-between items-center border-t-0 border-x-0">
+    <!-- Brand -->
+    <div class="flex items-center gap-6">
+      <div class="text-xl font-black tracking-tighter flex items-center gap-2 italic uppercase">
+        <div class="w-3 h-3 bg-brand-accent rounded-sm rotate-45 animate-pulse"></div>
+        PRODIFY
+      </div>
+      <div class="h-4 w-px bg-white/10 hidden md:block"></div>
+      <div class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-brand-accent/10 border border-brand-accent/20">
+        <span class="w-1 h-1 bg-brand-accent rounded-full"></span>
+        <span class="text-[8px] font-black uppercase tracking-widest text-brand-accent">v2.1 Stable</span>
+      </div>
+    </div>
+
+    <!-- Center Navigation -->
+    <div class="hidden lg:flex items-center gap-12 text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
+      <a href="#tool" class="hover:text-brand-accent transition-all hover:italic">AI Engine</a>
+      <a href="#pricing" class="hover:text-brand-accent transition-all hover:italic">Solutions</a>
+      <a href="#" class="hover:text-brand-accent transition-all hover:italic">Infrastructure</a>
+    </div>
+
+    <!-- Right Side / Auth & Status -->
+    <div class="flex items-center gap-10">
+      <div id="guest-nav" class="flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.2em]">
+         <a href="auth.html" class="text-gray-500 hover:text-white transition-colors">Authenticate</a>
+         <a href="auth.html?mode=register" class="btn-premium px-8 py-3 rounded-full">Initialize</a>
+      </div>
+
+      <div id="user-nav" class="hidden relative flex items-center gap-6">
+        <div class="hidden xl:flex flex-col items-end gap-1">
+          <div class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 bg-brand-accent rounded-full animate-pulse"></span>
+            <span class="text-[9px] font-black uppercase tracking-widest text-white">Systems: Operational</span>
+          </div>
+          <span class="text-[7px] font-bold text-gray-600 uppercase tracking-[0.2em]">Global Latency: 24ms</span>
+        </div>
+
+        <button onclick="toggleDropdown('profile-drop')" class="flex items-center gap-4 group text-right border-l border-white/5 pl-6">
+          <div class="hidden md:block">
+            <div id="profile-business-name" class="text-[10px] font-black text-white tracking-widest uppercase leading-none">BUSINESS</div>
+            <div class="text-[8px] font-bold text-brand-accent uppercase mt-1">Prodify ID</div>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-brand-accent/20 border border-brand-accent/30 flex items-center justify-center text-brand-accent font-black text-sm group-hover:bg-brand-accent group-hover:text-white transition-all">P</div>
+        </button>
+
+        <div id="profile-drop" class="hidden absolute top-full right-0 mt-6 w-72 glass rounded-[32px] p-6 animate-in z-[110]">
+          <div class="mb-6 pb-6 border-b border-white/5 px-2">
+            <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Workspace node</p>
+            <p id="modal-email" class="text-xs font-bold text-white truncate">loading...</p>
+          </div>
+          <div class="space-y-2">
+            <a href="profile.html" class="flex items-center p-3 rounded-xl hover:bg-brand-accent/10 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-brand-accent transition-all italic">Dashboard</a>
+            <div class="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+              <span class="text-[9px] font-bold tracking-widest text-gray-500 uppercase">TIER</span>
+              <span id="modal-plan" class="text-[9px] font-black text-brand-accent uppercase italic">FREE</span>
+            </div>
+            <button onclick="Auth.logout()" class="w-full text-left p-3 rounded-xl hover:bg-red-500/10 text-[10px] font-black uppercase text-red-500 transition-all border-t border-white/5 mt-4">Terminale Exit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="relative z-10 pt-44 px-6 md:px-12 max-w-7xl mx-auto">
+    <!-- Hero -->
+    <section class="text-center mb-32 reveal visible">
+      <div class="inline-flex items-center gap-3 px-5 py-2 mb-12 text-[10px] font-black tracking-[0.4em] uppercase border border-brand-accent/30 rounded-full bg-brand-accent/10 text-brand-accent">System initialized // PRODIFY v2</div>
+      <h1 class="text-7xl md:text-[140px] font-black mb-14 text-impact tracking-tighter uppercase italic">Unified<br/>Intelligence.</h1>
+      <p class="text-gray-400 text-xl md:text-3xl max-w-5xl mx-auto mb-20 font-medium leading-tight">İçerik üretimini kurumsal zeka ile ölçeklendirin. <span class="text-brand-accent italic">Prodify</span> Engine saniyeler içinde yüksek etkili kopyalar oluşturur.</p>
+      <div class="flex flex-col md:flex-row gap-8 justify-center items-center">
+        <a href="#tool" class="btn-premium px-16 py-6 rounded-full text-xs uppercase tracking-[0.3em] inline-block shadow-[0_20px_60px_rgba(16,185,129,0.15)]">Launch Operation</a>
+        <div class="flex items-center gap-4">
+          <div class="flex -space-x-3 overflow-hidden">
+            <img class="inline-block h-9 w-9 rounded-full ring-2 ring-black" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+            <img class="inline-block h-9 w-9 rounded-full ring-2 ring-black" src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+            <img class="inline-block h-9 w-9 rounded-full ring-2 ring-black" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+          </div>
+          <div class="text-left">
+            <div class="text-[10px] font-black text-white leading-none uppercase tracking-widest">+1k Teams</div>
+            <div class="text-[8px] font-bold text-gray-500 uppercase mt-1 italic">Using Intelligence</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trusted By / Marquee -->
+    <section class="mb-32 reveal py-6 opacity-40 hover:opacity-100 transition-opacity duration-700">
+      <p class="text-[8px] font-black text-gray-700 uppercase tracking-[0.6em] text-center mb-10 italic">Global E-Commerce Integration Nodes</p>
+      <div class="marquee-container relative flex overflow-x-hidden border-y border-white/[0.03] py-8 bg-white/[0.01]">
+        <div class="flex animate-marquee whitespace-nowrap items-center gap-24 pr-24">
+          <a href="https://trendyol.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">Trendyol</a>
+          <a href="https://hepsiburada.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">Hepsiburada</a>
+          <a href="https://n11.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">n11</a>
+          <a href="https://amazon.com.tr" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">Amazon</a>
+          <a href="https://ciceksepeti.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">ÇiçekSepeti</a>
+          <a href="https://gittigidiyor.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">GittiGidiyor</a>
+          <a href="https://pttavm.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">PttAVM</a>
+          <a href="https://sahibinden.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">Sahibinden.com</a>
+          <a href="https://letgo.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">Letgo</a>
+          <a href="https://alibaba.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">Alibaba Group</a>
+        </div>
+        <div class="flex animate-marquee whitespace-nowrap items-center gap-24 pr-24">
+          <a href="https://trendyol.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">Trendyol</a>
+          <a href="https://hepsiburada.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">Hepsiburada</a>
+          <a href="https://n11.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">n11</a>
+          <a href="https://amazon.com.tr" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">Amazon</a>
+          <a href="https://ciceksepeti.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">ÇiçekSepeti</a>
+          <a href="https://gittigidiyor.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">GittiGidiyor</a>
+          <a href="https://pttavm.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">PttAVM</a>
+          <a href="https://sahibinden.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">Sahibinden.com</a>
+          <a href="https://letgo.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">Letgo</a>
+          <a href="https://alibaba.com" target="_blank" class="text-xl font-black text-gray-700 uppercase tracking-tighter italic hover:text-brand-accent transition-all">Alibaba Group</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- App Environment -->
+    <section id="tool" class="mb-60 scroll-mt-40 reveal">
+      <div class="glass rounded-[60px] overflow-hidden border-brand-accent/10 relative shadow-2xl">
+        <div class="border-b border-white/5 px-12 py-8 flex items-center justify-between bg-black/40">
+          <div class="flex items-center gap-6">
+            <div class="flex gap-2"><div class="w-3 h-3 rounded-full bg-red-500/20"></div><div class="w-3 h-3 rounded-full bg-yellow-500/20"></div><div class="w-3 h-3 rounded-full bg-brand-accent/40"></div></div>
+            <span class="text-[10px] font-black text-gray-500 uppercase tracking-[0.5em] italic">Neural Workspace / Precision_Mode</span>
+          </div>
+          <div id="usage-info" class="text-[10px] font-black text-brand-accent uppercase tracking-widest bg-brand-accent/10 px-4 py-2 rounded-full border border-brand-accent/20">Operation Ready</div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 min-h-[650px]">
+          <div class="lg:col-span-4 p-12 border-r border-white/5 space-y-10">
+            <div class="space-y-6">
+              <div>
+                <label class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 block mb-3 italic">Ürün Adı</label>
+                <input id="product-name" type="text" placeholder="Giriş yapın..." class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-brand-accent outline-none transition-all placeholder-gray-700"/>
+              </div>
+              <div>
+                <label class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 block mb-3 italic">Detaylar & Özellikler</label>
+                <textarea id="product-features" rows="3" placeholder="Hızlı, dayanıklı, ekonomik..." class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-brand-accent outline-none transition-all resize-none placeholder-gray-700"></textarea>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 block mb-3 italic">Hedef Kitle</label>
+                  <input id="target-audience" type="text" placeholder="Gençler vb." class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-xs text-white focus:border-brand-accent outline-none transition-all placeholder-gray-700"/>
+                </div>
+                <div>
+                  <label class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 block mb-3 italic">Metin Tonu</label>
+                  <select id="content-tone" class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-xs text-white focus:border-brand-accent outline-none transition-all">
+                    <option value="Profesyonel">Profesyonel</option>
+                    <option value="Heyecanlı">Heyecanlı</option>
+                    <option value="Lüks/Premium">Lüks/Premium</option>
+                    <option value="Samimi">Samimi</option>
+                  </select>
+                </div>
+              </div>
+              <button onclick="generateContent()" id="generate-btn" class="btn-premium w-full py-6 rounded-2xl text-xs uppercase tracking-[0.3em] mt-6">Execute Process</button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-8 bg-[#020202]/60 p-12 flex flex-col items-center justify-center relative">
+            <div id="placeholder-ui" class="text-center opacity-20"><div class="w-24 h-24 border border-brand-accent/20 rounded-full flex items-center justify-center mb-8 mx-auto"><div class="w-3 h-3 bg-brand-accent rounded-full animate-ping"></div></div><p class="text-[10px] font-black uppercase tracking-[0.8em]">Awaiting Instruction</p></div>
+            <div id="loading-ui" class="hidden text-center"><div class="w-16 h-16 border-b-2 border-brand-accent rounded-full animate-spin mb-8 mx-auto"></div><p class="text-[10px] font-black text-brand-accent uppercase tracking-widest italic animate-pulse">Neural Reconstruction...</p></div>
+
+            <div id="results-display" class="hidden w-full h-full space-y-12 animate-in text-left">
+              <div class="space-y-4">
+                <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.4em] text-gray-600">
+                  <span>Output Sequence</span>
+                  <button onclick="copyToClipboard('desc-text', this)" class="text-brand-accent hover:text-white transition-colors uppercase">Copy</button>
+                </div>
+                <p id="desc-text" class="text-lg leading-relaxed text-gray-300 font-medium italic"></p>
+              </div>
+              <div class="grid md:grid-cols-2 gap-10 pt-10 border-t border-white/5">
+                <div class="space-y-4">
+                  <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-gray-600 italic">
+                    <span>SEO Meta Host</span>
+                    <button onclick="copyToClipboard('seo-text', this)" class="text-brand-accent/60 hover:text-brand-accent text-[8px] font-black">COPY</button>
+                  </div>
+                  <p id="seo-text" class="text-xl font-black text-white italic uppercase tracking-tighter"></p>
+                </div>
+                <div class="space-y-4">
+                  <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-gray-600 italic">
+                    <span>Social Protocol</span>
+                    <button onclick="copyToClipboard('social-text', this)" class="text-brand-accent/60 hover:text-brand-accent text-[8px] font-black">COPY</button>
+                  </div>
+                  <p id="social-text" class="text-sm text-gray-500 font-medium"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="mb-60 scroll-mt-40 reveal">
+      <div class="text-center mb-32">
+        <h2 class="text-impact text-6xl md:text-8xl font-black uppercase italic mb-8">Capital.</h2>
+        <p class="text-gray-500 text-xl font-medium">Büyümenizi kısıtlamayın.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-12">
+        <!-- Starter -->
+        <div class="glass p-12 rounded-[50px] flex flex-col glow-card group transition-all duration-500">
+          <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-10 italic">Core / 01</span>
+          <div class="text-5xl font-black mb-14 italic font-display">Starter</div>
+          <ul class="space-y-6 mb-16 flex-grow text-[11px] font-bold text-gray-500 uppercase tracking-[0.2em]">
+            <li>· 3 Neural Cycles / Day</li>
+            <li>· Baseline Access</li>
+          </ul>
+          <button onclick="purchasePlan('free')" class="w-full py-5 rounded-2xl border border-white/5 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white/5 transition-all text-white">Join Network</button>
+        </div>
+
+        <!-- Pro -->
+        <div class="glass p-12 rounded-[60px] flex flex-col border-brand-accent/50 bg-brand-accent/[0.04] relative scale-[1.08] shadow-[0_0_100px_rgba(16,185,129,0.1)]">
+          <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-brand-accent text-white text-[9px] font-black px-8 py-2.5 rounded-full uppercase tracking-[0.3em] italic">Full Access</div>
+          <span class="text-[10px] font-black text-brand-accent uppercase tracking-widest mb-10 italic">Neural / 02</span>
+          <div class="text-5xl font-black mb-14 italic font-display tracking-tighter">₺79 <span class="text-sm text-gray-600">/mo</span></div>
+          <ul class="space-y-6 mb-16 flex-grow text-[11px] font-black text-gray-200 uppercase tracking-[0.2em]">
+            <li class="flex items-center gap-4"><span class="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></span> Unlimited Intelligence</li>
+            <li class="flex items-center gap-4"><span class="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></span> Priority Neural Host</li>
+          </ul>
+          <button onclick="purchasePlan('pro')" class="btn-premium w-full py-6 rounded-3xl text-[11px] uppercase tracking-[0.4em]">Initialize Pro</button>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="glass p-12 rounded-[50px] flex flex-col glow-card transition-all duration-500">
+          <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-10 italic">Elite / 03</span>
+          <div class="text-5xl font-black mb-14 italic font-display">Elite</div>
+          <ul class="space-y-6 mb-16 flex-grow text-[11px] font-bold text-gray-500 uppercase tracking-[0.2em]">
+            <li>· Full API Infrastructure</li>
+            <li>· Dedicated Training</li>
+          </ul>
+          <button onclick="purchasePlan('enterprise')" class="w-full py-5 rounded-2xl border border-white/5 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white/5 transition-all text-white">Contact Elite</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="mb-60 glass p-20 rounded-[60px] text-center relative overflow-hidden reveal">
+      <div class="absolute inset-0 bg-brand-accent/5 blur-[120px]"></div>
+      <h2 class="text-4xl md:text-6xl font-black mb-12 relative z-10 text-impact uppercase italic">Future of Commerce <br/> starts here.</h2>
+      <a href="auth.html?mode=register" class="btn-premium px-16 py-6 rounded-full text-sm uppercase tracking-widest relative z-10 inline-block">
+        Claim Your Workspace
+      </a>
+    </section>
+
+  </main>
+
+  <footer class="py-32 px-12 glass border-t-brand-accent/20 bg-black/90 mt-20 relative z-20">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-20">
+      <!-- Brand & Mission -->
+      <div class="col-span-2 space-y-8">
+        <div class="text-2xl font-black tracking-tighter uppercase italic">PRODIFY <span class="text-brand-accent">©</span> 2024</div>
+        <p class="text-gray-500 text-sm leading-relaxed max-w-md font-medium">
+          Our mission is to bridge the gap between human creativity and sovereign intelligence. 
+          Prodify provides the neural infrastructure for next-generation commerce, enabling businesses to scale their strategic narrative with mathematical precision.
+        </p>
+        <div class="flex gap-6 items-center grayscale opacity-30 hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+          <span class="text-[9px] font-black uppercase tracking-[0.3em] text-white">Powered by</span>
+          <div class="h-4 w-px bg-white/10"></div>
+          <span class="text-[10px] font-bold">Google Gemini</span>
+          <span class="text-[10px] font-bold">Llama 3</span>
+          <span class="text-[10px] font-bold">Neural Core</span>
+        </div>
+      </div>
+
+      <!-- Infrastructure Links -->
+      <div class="space-y-8">
+        <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-brand-accent italic">Logistics</h4>
+        <ul class="space-y-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+          <li><a href="auth.html" class="hover:text-white transition-colors italic">Neural Workspace</a></li>
+          <li><a href="#" class="hover:text-white transition-colors italic">API Protocol</a></li>
+          <li><a href="#" class="hover:text-white transition-colors italic">Core Systems</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal & Auth -->
+      <div class="space-y-8">
+        <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-brand-accent italic">Governance</h4>
+        <ul class="space-y-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+          <li><a href="#" class="hover:text-white transition-colors italic">Service Terms</a></li>
+          <li><a href="#" class="hover:text-white transition-colors italic">Privacy Node</a></li>
+          <li><a href="#" class="hover:text-white transition-colors italic">Legal Specs</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto mt-32 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
+      <p class="text-[9px] font-black text-gray-700 uppercase tracking-[0.5em]">Global Infrastructure // Secure Access</p>
+      <div class="flex gap-12 text-[9px] font-black text-brand-accent/40 uppercase tracking-widest italic">
+        <span>System Status: Optimal</span>
+        <span>Version: 2.1.0_emerald</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
