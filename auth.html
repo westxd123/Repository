@@ -84,8 +84,16 @@
         <div class="w-3 h-3 bg-brand-accent rounded-sm rotate-45"></div>
         PRODIFY <span class="text-brand-accent">/</span> AUTH
       </div>
-      <h1 id="auth-title" class="text-3xl font-black font-display uppercase italic tracking-tight text-glow">Access Workspace</h1>
-      <p id="auth-subtitle" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-2">Initialize Security Protocol</p>
+      <!-- Language Switcher -->
+      <div class="flex justify-center mb-6">
+        <div class="flex items-center p-1 rounded-full bg-white/[0.04] border border-white/[0.08]" style="gap:2px">
+          <button data-lang="en" onclick="setLanguage('en')" class="lang-btn px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-300 text-gray-500">EN</button>
+          <div class="w-px h-3 bg-white/10"></div>
+          <button data-lang="tr" onclick="setLanguage('tr')" class="lang-btn px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-300 text-gray-500">TR</button>
+        </div>
+      </div>
+      <h1 id="auth-title" data-i18n="auth.title-login" class="text-3xl font-black font-display uppercase italic tracking-tight text-glow">Access Workspace</h1>
+      <p id="auth-subtitle" data-i18n="auth.subtitle-login" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-2">Initialize Security Protocol</p>
     </div>
 
     <div class="glass-box rounded-[48px] p-10 relative overflow-hidden">
@@ -95,18 +103,18 @@
       <form id="auth-form" class="space-y-6 relative z-10">
         <div id="register-fields" class="hidden space-y-6">
           <div>
-            <label class="text-[9px] font-black text-gray-600 uppercase tracking-widest block mb-2 px-1">Organization Identity</label>
-            <input type="text" id="businessName" placeholder="Business Name" class="input-premium w-full rounded-2xl px-6 py-4 text-sm text-white"/>
+            <label data-i18n="auth.org-label" class="text-[9px] font-black text-gray-600 uppercase tracking-widest block mb-2 px-1">Organization Identity</label>
+            <input type="text" id="businessName" data-i18n-placeholder="auth.org-ph" placeholder="Business Name" class="input-premium w-full rounded-2xl px-6 py-4 text-sm text-white"/>
           </div>
         </div>
 
         <div>
-          <label class="text-[9px] font-black text-gray-600 uppercase tracking-widest block mb-2 px-1">Authorized Email</label>
-          <input type="email" id="email" placeholder="name@company.com" class="input-premium w-full rounded-2xl px-6 py-4 text-sm text-white"/>
+          <label data-i18n="auth.email-label" class="text-[9px] font-black text-gray-600 uppercase tracking-widest block mb-2 px-1">Authorized Email</label>
+          <input type="email" id="email" data-i18n-placeholder="auth.email-ph" placeholder="name@company.com" class="input-premium w-full rounded-2xl px-6 py-4 text-sm text-white"/>
         </div>
 
         <div>
-          <label class="text-[9px] font-black text-gray-600 uppercase tracking-widest block mb-2 px-1">Secret Key</label>
+          <label data-i18n="auth.pass-label" class="text-[9px] font-black text-gray-600 uppercase tracking-widest block mb-2 px-1">Secret Key</label>
           <input type="password" id="password" placeholder="••••••••" class="input-premium w-full rounded-2xl px-6 py-4 text-sm text-white"/>
         </div>
 
@@ -122,7 +130,7 @@
       </div>
     </div>
 
-    <a href="/" class="block text-center mt-12 text-[9px] font-black text-gray-700 hover:text-white uppercase tracking-[0.5em] transition-all">
+    <a href="/" data-i18n="auth.return" class="block text-center mt-12 text-[9px] font-black text-gray-700 hover:text-white uppercase tracking-[0.5em] transition-all">
       Return to Headquarters
     </a>
   </div>
@@ -130,6 +138,7 @@
   <script src="app.js"></script>
   <script>
     let mode = 'login';
+    const _t = (k) => { const lang = localStorage.getItem('prodify_lang') || 'en'; return (typeof TRANSLATIONS !== 'undefined' && TRANSLATIONS[lang] && TRANSLATIONS[lang][k]) ? TRANSLATIONS[lang][k] : k; };
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.get('mode') === 'register') toggleMode();
 
@@ -143,16 +152,16 @@
 
       if(mode === 'register') {
         regFields.classList.remove('hidden');
-        title.textContent = "Global Register";
-        sub.textContent = "Create New Operational Node";
-        btn.textContent = "Initialize Workspace";
-        toggle.innerHTML = 'Have a Workspace? <span class="text-white underline underline-offset-4">Authenticate</span>';
+        title.textContent = _t('auth.title-register');
+        sub.textContent = _t('auth.subtitle-register');
+        btn.textContent = _t('auth.btn-register');
+        toggle.innerHTML = _t('auth.toggle-register');
       } else {
         regFields.classList.add('hidden');
-        title.textContent = "Access Workspace";
-        sub.textContent = "Initialize Security Protocol";
-        btn.textContent = "Authorize Access";
-        toggle.innerHTML = 'New Workspace? <span class="text-white underline underline-offset-4">Initialize One</span>';
+        title.textContent = _t('auth.title-login');
+        sub.textContent = _t('auth.subtitle-login');
+        btn.textContent = _t('auth.btn-login');
+        toggle.innerHTML = _t('auth.toggle-login');
       }
     }
 

@@ -37,8 +37,14 @@
   <nav class="fixed top-0 z-50 w-full py-6 px-12 flex justify-between items-center bg-black/50 backdrop-blur-xl border-b border-white/5">
     <a href="/" class="text-sm font-black tracking-tighter uppercase italic">PRODIFY <span class="text-brand-accent">/</span> PROFILE</a>
     <div class="flex items-center gap-6">
-      <button onclick="Auth.logout()" class="text-[10px] font-bold uppercase tracking-widest text-red-500 hover:text-red-400">Logout System</button>
-      <a href="/" class="text-[10px] font-black bg-white text-black px-6 py-2.5 rounded-xl uppercase tracking-widest hover:bg-brand-accent hover:text-white transition-all shadow-xl">Go to Dashboard</a>
+      <!-- Language Switcher -->
+      <div class="flex items-center p-1 rounded-full bg-white/[0.04] border border-white/[0.08]" style="gap:2px">
+        <button data-lang="en" onclick="setLanguage('en')" class="lang-btn px-3.5 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-300 text-gray-500">EN</button>
+        <div class="w-px h-3 bg-white/10"></div>
+        <button data-lang="tr" onclick="setLanguage('tr')" class="lang-btn px-3.5 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-300 text-gray-500">TR</button>
+      </div>
+      <button onclick="Auth.logout()" data-i18n="profile.logout" class="text-[10px] font-bold uppercase tracking-widest text-red-500 hover:text-red-400">Logout System</button>
+      <a href="/" data-i18n="profile.goto" class="text-[10px] font-black bg-white text-black px-6 py-2.5 rounded-xl uppercase tracking-widest hover:bg-brand-accent hover:text-white transition-all shadow-xl">Go to Dashboard</a>
     </div>
   </nav>
 
@@ -63,14 +69,14 @@
     <div class="grid lg:grid-cols-12 gap-10 px-10 mt-20 animate-in">
       <div class="lg:col-span-4 space-y-6">
         <div class="glass-card rounded-[40px] p-10">
-          <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-600 mb-8 italic">Node Intelligence</h3>
+          <h3 data-i18n="profile.node" class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-600 mb-8 italic">Node Intelligence</h3>
           <div class="space-y-8">
             <div>
-              <p class="text-[9px] font-bold text-gray-600 uppercase mb-2">Auth Node</p>
+              <p data-i18n="profile.auth-node" class="text-[9px] font-bold text-gray-600 uppercase mb-2">Auth Node</p>
               <p id="user-email" class="text-md font-bold text-white truncate">loading...</p>
             </div>
             <div>
-              <p class="text-[9px] font-bold text-gray-600 uppercase mb-2">Plan Spectrum</p>
+              <p data-i18n="profile.plan" class="text-[9px] font-bold text-gray-600 uppercase mb-2">Plan Spectrum</p>
               <p id="user-plan" class="text-md font-black text-brand-accent uppercase italic">loading...</p>
             </div>
           </div>
@@ -81,22 +87,22 @@
         <div class="stat-card flex flex-col justify-between group">
           <div class="flex justify-between items-start mb-12">
             <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 flex items-center justify-center text-brand-accent font-black text-xl">AI</div>
-            <span class="text-[8px] font-black text-gray-600 uppercase tracking-[0.4em]">Efficiency_Rate</span>
+            <span data-i18n="profile.efficiency" class="text-[8px] font-black text-gray-600 uppercase tracking-[0.4em]">Efficiency_Rate</span>
           </div>
           <div>
             <div id="stat-daily" class="text-6xl font-black mb-2 font-display italic tracking-tighter">0</div>
-            <p class="text-[11px] font-bold text-gray-500 uppercase tracking-widest mt-2">Daily Success cycles</p>
+            <p data-i18n="profile.daily" class="text-[11px] font-bold text-gray-500 uppercase tracking-widest mt-2">Daily Success Cycles</p>
           </div>
         </div>
 
         <div class="stat-card flex flex-col justify-between group bg-brand-accent/[0.01]">
           <div class="flex justify-between items-start mb-12">
             <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 flex items-center justify-center text-brand-accent font-black text-xl">Σ</div>
-            <span class="text-[8px] font-black text-gray-600 uppercase tracking-[0.4em]">Integrated_Output</span>
+            <span data-i18n="profile.integrated" class="text-[8px] font-black text-gray-600 uppercase tracking-[0.4em]">Integrated_Output</span>
           </div>
           <div>
             <div id="stat-total" class="text-6xl font-black mb-2 font-display italic tracking-tighter">0</div>
-            <p class="text-[11px] font-bold text-gray-500 uppercase tracking-widest mt-2">Cumulative Intelligence</p>
+            <p data-i18n="profile.cumulative" class="text-[11px] font-bold text-gray-500 uppercase tracking-widest mt-2">Cumulative Intelligence</p>
           </div>
         </div>
       </div>
