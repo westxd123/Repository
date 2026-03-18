@@ -172,10 +172,11 @@ async function callAIWithModel(model, prompt) {
   return JSON.parse(jsonMatch[0]);
 }
 
-async function callAI(productName, productFeatures, targetAudience = '', tone = '') {
+async function callAI(productName, productFeatures, targetAudience = '', productCategory = '', tone = '') {
   const prompt = `Sen profesyonel bir e-ticaret metin yazarı ve pazarlama stratejistisin. Aşağıdaki ürün bilgilerini kullanarak doğal, ikna edici ve kurumsal bir dille Türkçe içerik üret.
   
   Ürün: ${productName}
+  ${productCategory ? `Kategori: ${productCategory}` : ''}
   ${productFeatures ? `Özellikler: ${productFeatures}` : ''}
   ${targetAudience ? `Hedef Kitle: ${targetAudience}` : ''}
   ${tone ? `Metin Tonu: ${tone}` : ''}
@@ -189,7 +190,10 @@ async function callAI(productName, productFeatures, targetAudience = '', tone = 
   {
     "description": "Ürünün değer önerisini vurgulayan, kapsamlı profesyonel açıklama.",
     "seoTitle": "SEO odaklı kurumsal başlık.",
-    "instagramCaption": "Sosyal medya için etkileşim odaklı profesyonel metin.",
+    "instagram": "Instagram için görsel odaklı profesyonel metin ve hashtagler.",
+    "tiktok": "TikTok için enerjik, kısa ve dikkat çekici metin.",
+    "linkedin": "LinkedIn için daha ciddi, kurumsal ve vizyoner metin.",
+    "twitter": "Twitter (X) için kısa, punchy ve etkileşim odaklı metin.",
     "keywords": ["anahtar", "kelime", "listesi"]
   }`;
 
@@ -317,6 +321,7 @@ app.post('/api/generate', async (req, res) => {
         productName.trim(), 
         productFeatures?.trim(),
         targetAudience?.trim(),
+        productCategory?.trim(),
         tone?.trim()
       );
 
@@ -324,7 +329,10 @@ app.post('/api/generate', async (req, res) => {
       const cleanData = {
         description: (rawResult.description || "İçerik üretilemedi.").replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim(),
         seoTitle: (rawResult.seoTitle || "Başlık üretilemedi.").replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim(),
-        instagramCaption: (rawResult.instagramCaption || "Altyazı üretilemedi.").replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim(),
+        instagram: (rawResult.instagram || "").trim(),
+        tiktok: (rawResult.tiktok || "").trim(),
+        linkedin: (rawResult.linkedin || "").trim(),
+        twitter: (rawResult.twitter || "").trim(),
         keywords: rawResult.keywords || []
       };
 

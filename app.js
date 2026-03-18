@@ -65,6 +65,7 @@ const TRANSLATIONS = {
     'tool.product-name': 'Product Name', 'tool.product-name-ph': 'Enter product name...',
     'tool.features': 'Details & Features', 'tool.features-ph': 'Fast, durable, economical...',
     'tool.audience': 'Target Audience', 'tool.audience-ph': 'Young adults, etc.',
+    'tool.category': 'Product Category',
     'tool.tone': 'Content Tone', 'tool.tone-professional': 'Professional',
     'tool.tone-exciting': 'Exciting', 'tool.tone-luxury': 'Luxury / Premium', 'tool.tone-sincere': 'Sincere',
     'tool.btn': 'Execute Process', 'tool.awaiting': 'Awaiting Instruction',
@@ -136,6 +137,7 @@ const TRANSLATIONS = {
     'tool.product-name': 'Ürün Adı', 'tool.product-name-ph': 'Ürün adını girin...',
     'tool.features': 'Detaylar & Özellikler', 'tool.features-ph': 'Hızlı, dayanıklı, ekonomik...',
     'tool.audience': 'Hedef Kitle', 'tool.audience-ph': 'Gençler vb.',
+    'tool.category': 'Ürün Kategorisi',
     'tool.tone': 'Metin Tonu', 'tool.tone-professional': 'Profesyonel',
     'tool.tone-exciting': 'Heyecanlı', 'tool.tone-luxury': 'Lüks / Premium', 'tool.tone-sincere': 'Samimi',
     'tool.btn': 'İşlemi Yürüt', 'tool.awaiting': 'Komut Bekleniyor',
@@ -283,6 +285,7 @@ async function generateContent() {
   const name = document.getElementById('product-name').value.trim();
   const features = document.getElementById('product-features').value.trim();
   const audience = document.getElementById('target-audience').value.trim();
+  const category = document.getElementById('product-category').value;
   const tone = document.getElementById('content-tone').value;
 
   if (!name) {
@@ -305,7 +308,7 @@ async function generateContent() {
     const response = await fetch(`${CONFIG.API_BASE}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-user-id': user.id },
-      body: JSON.stringify({ productName: name, productFeatures: features, targetAudience: audience, tone })
+      body: JSON.stringify({ productName: name, productFeatures: features, targetAudience: audience, productCategory: category, tone })
     });
     const result = await response.json();
     if (!response.ok) throw new Error(result.error);
@@ -324,11 +327,36 @@ async function generateContent() {
   }
 }
 
+let currentResults = null;
+
 function renderContent(data) {
+  currentResults = data;
   document.getElementById('desc-text').textContent = data.description;
   document.getElementById('seo-text').textContent = data.seoTitle;
-  document.getElementById('social-text').textContent = data.instagramCaption;
+  switchPlatform('instagram');
   document.getElementById('results-display').classList.remove('hidden');
+}
+
+function switchPlatform(platform) {
+  if (!currentResults) return;
+  
+  // Update UI tabs
+  document.querySelectorAll('.platform-tab').forEach(btn => {
+    const isTarget = btn.getAttribute('onclick').includes(platform);
+    btn.classList.toggle('active', isTarget);
+    btn.classList.toggle('text-gray-500', !isTarget);
+  });
+
+  // Update title and content
+  const titles = {
+    instagram: 'INSTAGRAM PROTOCOL',
+    tiktok: 'TIKTOK STRATEGY',
+    linkedin: 'LINKEDIN PROFESSIONAL',
+    twitter: 'TWITTER (X) BROADCAST'
+  };
+  
+  document.getElementById('platform-title').textContent = titles[platform];
+  document.getElementById('social-text').textContent = currentResults[platform] || currentResults.instagramCaption || 'Content not generated.';
 }
 
 async function copyToClipboard(id, btn) {

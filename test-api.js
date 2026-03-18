@@ -12,10 +12,14 @@ async function testFull() {
     });
 
     console.log('✅ BAŞARILI!\n');
-    console.log('📄 Açıklama:\n', res.data.data.description, '\n');
-    console.log('🔍 SEO Başlık:', res.data.data.seoTitle, '\n');
-    console.log('📸 Instagram:\n', res.data.data.instagramCaption, '\n');
-    console.log('🏷️  Keywords:', res.data.data.keywords?.join(', '));
+    const d = res.data.data;
+    console.log('📄 Açıklama:\n', d.description, '\n');
+    console.log('🔍 SEO Başlık:', d.seoTitle, '\n');
+    console.log('📸 Instagram:\n', d.instagram, '\n');
+    console.log('🎵 TikTok:\n', d.tiktok, '\n');
+    console.log('💼 LinkedIn:\n', d.linkedin, '\n');
+    console.log('🐦 Twitter (X):\n', d.twitter, '\n');
+    console.log('🏷️  Keywords:', d.keywords?.join(', '));
     console.log('\n📊 Kullanım:', res.data.usage);
   } catch(e) {
     console.error('❌ HATA:', e.response?.data || e.message);
